@@ -1,6 +1,7 @@
 package io.youth.home.global;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class ErrorResponse {
     private String code;
     private String message;
