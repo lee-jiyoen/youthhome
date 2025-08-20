@@ -27,4 +27,9 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="author_id")
     private User author;
 
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 }

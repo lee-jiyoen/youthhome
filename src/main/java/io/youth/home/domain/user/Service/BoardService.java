@@ -2,6 +2,7 @@ package io.youth.home.domain.user.Service;
 
 import io.youth.home.domain.user.dto.BoardRequest;
 import io.youth.home.domain.user.dto.BoardResponse;
+import io.youth.home.domain.user.dto.BoardUpdateRequest;
 import io.youth.home.domain.user.entity.Board;
 import io.youth.home.domain.user.entity.User;
 import io.youth.home.domain.user.repository.BoardRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Transactional
 public class BoardService {
+
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
@@ -30,11 +32,39 @@ public class BoardService {
                 .build();
 
         Board saved = boardRepository.save(board);
+        return toResponse(saved);
+    }
+
+    public BoardResponse update(Long boardId, BoardUpdateRequest req) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new UserException(ErrorCode.BOARD_NOT_FOUND));
+
+        if (!board.getAuthor().getId().equals(req.requesterId())) {
+            throw new UserException(ErrorCode.FORBIDDEN);
+        }
+
+        board.update(req.title(), req.content());
+
+        return toResponse(board);
+    }
+
+    public void delete(Long boardId, Long requesterId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new UserException(ErrorCode.BOARD_NOT_FOUND));
+
+        if (!board.getAuthor().getId().equals(requesterId)) {
+            throw new UserException(ErrorCode.FORBIDDEN);
+        }
+
+        boardRepository.delete(board);
+    }
+
+    private BoardResponse toResponse(Board b) {
         return new BoardResponse(
-                saved.getId(),
-                saved.getTitle(),
-                saved.getContent(),
-                saved.getAuthor().getId()
+                b.getId(),
+                b.getTitle(),
+                b.getContent(),
+                b.getAuthor().getId()
         );
     }
 }
