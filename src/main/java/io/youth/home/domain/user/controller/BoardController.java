@@ -9,20 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/boards") // 기본 경로
+@RequestMapping("/boards")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping
     public ResponseEntity<BoardResponse> create(@RequestBody BoardRequest req) {
         return ResponseEntity.ok(boardService.create(req));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<BoardResponse> update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody BoardUpdateRequest req
     ) {
         return ResponseEntity.ok(boardService.update(id, req));
@@ -30,8 +29,8 @@ public class BoardController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long id,
-            @RequestParam Long requesterId
+            @PathVariable("id") Long id,
+            @RequestParam(name = "requesterId") Long requesterId
     ) {
         boardService.delete(id, requesterId);
         return ResponseEntity.noContent().build();
