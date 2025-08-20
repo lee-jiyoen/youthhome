@@ -21,6 +21,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/boards").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/boards/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/boards/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
